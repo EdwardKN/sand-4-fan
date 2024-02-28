@@ -3,8 +3,6 @@ package world.elementTypes;
 import world.Chunk;
 import world.Element;
 
-import static world.World.getElementAtCell;
-
 public class MovableSolid extends Solid {
 
     public MovableSolid(int x, int y, int[] col, Chunk chunk) {
@@ -14,7 +12,7 @@ public class MovableSolid extends Solid {
 
     @Override
     public void step() {
-        Element targetCell = getElementAtCell(world, x, y + 1);
+        Element targetCell = world.getElementAtCell(x, y + 1);
 
         if (targetCell instanceof Air) {
             moveTo(x, y + 1);
@@ -24,7 +22,7 @@ public class MovableSolid extends Solid {
     }
 
     public void lookDiagonally(int dir, boolean first) {
-        Element targetCell = getElementAtCell(world, x + dir, y + 1);
+        Element targetCell = world.getElementAtCell(x + dir, y + 1);
 
         if (targetCell instanceof Air) {
             moveTo(this.x + dir, this.y + 1);

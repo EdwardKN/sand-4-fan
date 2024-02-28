@@ -1,5 +1,6 @@
 package world;
 
+import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Map;
@@ -18,27 +19,28 @@ public class World {
     public PerlinGenerator perlin = new PerlinGenerator(seed);
 
     public void updateChunks() {
-        chunks.forEach(
-                (coord, chunk) -> {
-                    if (chunk.shouldStep) {
-                        chunk.updateElements();
-                    }
-                    chunk.shiftShouldStepAndReset();
-                }
-        );
+        Collection<Chunk> values = chunks.values();
+        Chunk[] targetArray = values.toArray(new Chunk[0]);
+
+        for (Chunk chunk : targetArray) {
+            if (chunk.shouldStep) {
+                chunk.updateElements();
+            }
+            chunk.shiftShouldStepAndReset();
+        }
     }
 
-    public static void createNewChunk(World world, int x, int y) {
-        Chunk newChunk = new Chunk(x, y, world);
-        world.chunks.put(x + "," + y, newChunk);
-        newChunk.initializeChunk(world.perlin);
+    public void createNewChunk(int x, int y) {
+        Chunk newChunk = new Chunk(x, y, this);
+        chunks.put(x + "," + y, newChunk);
+        newChunk.initializeChunk(perlin);
     }
 
     public static int getChunkCoord(int c) {
         return (int) ((c - (c < 0 ? -1 : 0)) / CHUNKSIZE) + (c < 0 ? -1 : 0);
     }
 
-    public static Element getElementAtCell(World world, int x, int y) {
+    public Element getElementAtCell(int x, int y) {
         int chunkX = getChunkCoord(x);
         int chunkY = getChunkCoord(y);
 
@@ -47,7 +49,7 @@ public class World {
 
         int elementCoordinateValue = elementCoordinate(elementX, elementY);
 
-        return world.chunks.get(chunkX + "," + chunkY).elements[elementCoordinateValue];
+        return chunks.get(chunkX + "," + chunkY).elements[elementCoordinateValue];
     }
 
 }

@@ -14,7 +14,6 @@ import java.awt.image.BufferedImage;
 import javax.swing.*;
 
 import static world.Chunk.*;
-import static world.World.createNewChunk;
 import static world.World.getChunkCoord;
 
 
@@ -24,8 +23,8 @@ public class GamePanel extends JPanel implements Runnable {
     static final int STANDARDY = 9;
     static final int RENDERSCALE = 15;
 
-    int screenWidth = STANDARDX * RENDERSCALE;
-    int screenHeight = STANDARDY * RENDERSCALE;
+    int screenWidth = 1280;
+    int screenHeight = 720;
     int realWidth = 0;
     int realHeight = 0;
     double scale = 0;
@@ -109,10 +108,10 @@ public class GamePanel extends JPanel implements Runnable {
     public void initGame() {
         world = new World();
 
-        calculateRealSize();
         tempScreen = new BufferedImage(STANDARDX * RENDERSCALE, STANDARDY * RENDERSCALE, BufferedImage.TYPE_INT_ARGB);
         g2 = (Graphics2D) tempScreen.getGraphics();
         player.setDefaultValues();
+
     }
 
     public void calculateRealSize() {
@@ -130,6 +129,7 @@ public class GamePanel extends JPanel implements Runnable {
     public void drawToTempScreen() {
         drawChunks(g2);
         drawCursor(g2);
+        
 
         g2.setFont(new Font("Arial", Font.BOLD, 10));
         g2.setColor(Color.BLACK);
@@ -139,8 +139,6 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void drawToScreen() {
         Graphics g = getGraphics();
-
-        ;
         g.drawImage(tempScreen, (screenWidth - realWidth) / 2, (screenHeight - realHeight) / 2, realWidth, realHeight, null);
         g.dispose();
     }
@@ -161,7 +159,7 @@ public class GamePanel extends JPanel implements Runnable {
                     }
                     g2d.drawImage(chunk.imageBuffer, -(player.x % CHUNKSIZE) + x * CHUNKSIZE, -(player.y % CHUNKSIZE) + y * CHUNKSIZE, CHUNKSIZE, CHUNKSIZE, null);
                 } else {
-                    createNewChunk(world, chunkX, chunkY);
+                    world.createNewChunk(chunkX, chunkY);
                 }
             }
         }

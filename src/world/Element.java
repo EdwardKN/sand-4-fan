@@ -49,10 +49,10 @@ public class Element {
         Element elementOnNewPos = newChunk.elements[elementCoordinate(newElementX, newElementY)];
 
         if (world.chunks.get(chunkX + "," + chunkY) == null) {
-            createNewChunk(world, chunkX, chunkY);
+            world.createNewChunk(chunkX, chunkY);
         }
         if (world.chunks.get(newChunkX + "," + newChunkY) == null) {
-            createNewChunk(world, newChunkX, newChunkY);
+            world.createNewChunk(newChunkX, newChunkY);
         }
 
         elementOnNewPos.x = x;
@@ -70,16 +70,16 @@ public class Element {
         oldChunk.shouldStepNextFrame = true;
 
         if (world.chunks.get((chunkX + 1) + "," + chunkY) == null) {
-            createNewChunk(world, chunkX + 1, chunkY);
+            world.createNewChunk(chunkX + 1, chunkY);
         }
         if (world.chunks.get((chunkX - 1) + "," + chunkY) == null) {
-            createNewChunk(world, chunkX - 1, chunkY);
+            world.createNewChunk(chunkX - 1, chunkY);
         }
         if (world.chunks.get(chunkX + "," + (chunkY + 1)) == null) {
-            createNewChunk(world, chunkX, chunkY + 1);
+            world.createNewChunk(chunkX, chunkY + 1);
         }
         if (world.chunks.get(chunkX + "," + (chunkY - 1)) == null) {
-            createNewChunk(world, chunkX, chunkY - 1);
+            world.createNewChunk(chunkX, chunkY - 1);
         }
         world.chunks.get((chunkX + 1) + "," + chunkY).shouldStepNextFrame = true;
         world.chunks.get((chunkX - 1) + "," + chunkY).shouldStepNextFrame = true;
