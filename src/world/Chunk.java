@@ -7,6 +7,9 @@ import world.elementTypes.Solid;
 import java.awt.image.BufferedImage;
 import java.util.*;
 
+import static main.Utils.elementCoordinate;
+import static main.Utils.shuffleArray;
+
 public class Chunk {
     public int x, y;
 
@@ -71,24 +74,6 @@ public class Chunk {
         shouldStepNextFrame = false;
     }
 
-    public static int elementCoordinate(int x, int y) {
-        return y * CHUNKSIZE + x;
-    }
 
-    public static int relativeElementCoordinate(int c) {
-        return ((c % CHUNKSIZE) + CHUNKSIZE) % CHUNKSIZE;
-    }
-
-    private static void shuffleArray(Element[] array) {
-        int index;
-        Element temp;
-        Random random = new Random();
-        for (int i = array.length - 1; i > 0; i--) {
-            index = random.nextInt(i + 1);
-            temp = array[index];
-            array[index] = array[i];
-            array[i] = temp;
-        }
-    }
 }
 

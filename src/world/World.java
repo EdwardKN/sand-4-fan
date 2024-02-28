@@ -7,6 +7,7 @@ import java.util.Map;
 
 import perlin.PerlinGenerator;
 
+import static main.Utils.*;
 import static world.Chunk.*;
 
 
@@ -36,9 +37,6 @@ public class World {
         newChunk.initializeChunk(perlin);
     }
 
-    public static int getChunkCoord(int c) {
-        return (int) ((c - (c < 0 ? -1 : 0)) / CHUNKSIZE) + (c < 0 ? -1 : 0);
-    }
 
     public Element getElementAtCell(int x, int y) {
         int chunkX = getChunkCoord(x);

@@ -1,10 +1,6 @@
 package world;
 
-import java.awt.*;
-
-import static world.Chunk.*;
-import static world.Chunk.relativeElementCoordinate;
-import static world.World.*;
+import static main.Utils.*;
 
 public class Element {
     public int x, y, chunkX, chunkY, relativeX, relativeY;

@@ -9,12 +9,12 @@ import world.elementTypes.MovableSolid;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import javax.swing.*;
 
+import static java.lang.Math.clamp;
+import static main.Utils.*;
 import static world.Chunk.*;
-import static world.World.getChunkCoord;
 
 
 public class GamePanel extends JPanel implements Runnable {
@@ -36,7 +36,7 @@ public class GamePanel extends JPanel implements Runnable {
     static final int FPS = 60;
     int currentFPS = 0;
 
-    static final boolean TRUEFPS = false;
+    final boolean TRUEFPS = false;
 
     KeyHandler keyH = new KeyHandler();
     MouseHandler mouse = new MouseHandler();
@@ -111,7 +111,7 @@ public class GamePanel extends JPanel implements Runnable {
         tempScreen = new BufferedImage(STANDARDX * RENDERSCALE, STANDARDY * RENDERSCALE, BufferedImage.TYPE_INT_ARGB);
         g2 = (Graphics2D) tempScreen.getGraphics();
         player.setDefaultValues();
-
+        calculateRealSize();
     }
 
     public void calculateRealSize() {
@@ -127,14 +127,15 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void drawToTempScreen() {
+
         drawChunks(g2);
         drawCursor(g2);
-        
 
         g2.setFont(new Font("Arial", Font.BOLD, 10));
         g2.setColor(Color.BLACK);
 
         g2.drawString("FPS: " + currentFPS, 20, 20);
+
     }
 
     public void drawToScreen() {
@@ -201,7 +202,6 @@ public class GamePanel extends JPanel implements Runnable {
                             chunk.hasUpdatedSinceImageBufferChange = true;
                             chunk.shouldStepNextFrame = true;
                         }
-                        ;
                     }
                 }
             }
@@ -209,7 +209,5 @@ public class GamePanel extends JPanel implements Runnable {
 
     }
 
-    public static float clamp(float val, float min, float max) {
-        return Math.max(min, Math.min(max, val));
-    }
+
 }
