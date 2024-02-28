@@ -7,14 +7,16 @@ import static world.Chunk.relativeElementCoordinate;
 import static world.World.*;
 
 public class Element {
-    int x, y, chunkX, chunkY, relativeX, relativeY;
-    int[] col;
+    public int x, y, chunkX, chunkY, relativeX, relativeY;
+    public int[] col;
 
-    Chunk chunk;
+    public Chunk chunk;
 
-    World world;
+    public World world;
 
     int drawCol;
+
+    public boolean movable = false;
 
     public Element(int x, int y, int[] col, Chunk chunk) {
         this.x = x;
@@ -31,15 +33,15 @@ public class Element {
         calculateRelativeXY();
     }
 
-    public void moveTo(int x, int y) {
-        int newChunkX = getChunkCoord(x);
-        int newChunkY = getChunkCoord(y);
+    public void moveTo(int newX, int newY) {
+        int newChunkX = getChunkCoord(newX);
+        int newChunkY = getChunkCoord(newY);
 
         int elementX = relativeX;
         int elementY = relativeY;
 
-        int newElementX = relativeElementCoordinate(x);
-        int newElementY = relativeElementCoordinate(y);
+        int newElementX = relativeElementCoordinate(newX);
+        int newElementY = relativeElementCoordinate(newY);
 
         Chunk newChunk = world.chunks.get(newChunkX + "," + newChunkY);
         Chunk oldChunk = chunk;
@@ -55,13 +57,14 @@ public class Element {
 
         elementOnNewPos.x = x;
         elementOnNewPos.y = y;
-        chunk.elements[elementCoordinate(elementX, elementY)] = elementOnNewPos;
+        oldChunk.elements[elementCoordinate(elementX, elementY)] = elementOnNewPos;
         elementOnNewPos.calculateRelativeXY();
 
-        this.x = x;
-        this.y = y;
+        x = newX;
+        y = newY;
 
         newChunk.elements[elementCoordinate(newElementX, newElementY)] = this;
+        calculateRelativeXY();
 
         newChunk.shouldStepNextFrame = true;
         oldChunk.shouldStepNextFrame = true;
@@ -92,9 +95,12 @@ public class Element {
         chunkX = getChunkCoord(x);
         chunkY = getChunkCoord(y);
 
-        chunk = chunk.world.chunks.get(chunkX + "," + chunkY);
+        chunk = world.chunks.get(chunkX + "," + chunkY);
     }
 
 
+    public void step() {
+
+    }
 }
 

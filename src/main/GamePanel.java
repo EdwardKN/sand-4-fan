@@ -102,12 +102,12 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update() {
+        world.updateChunks();
         player.update();
     }
 
     public void initGame() {
         world = new World();
-        world.initializeWorld();
 
         calculateRealSize();
         tempScreen = new BufferedImage(STANDARDX * RENDERSCALE, STANDARDY * RENDERSCALE, BufferedImage.TYPE_INT_ARGB);
@@ -182,6 +182,7 @@ public class GamePanel extends JPanel implements Runnable {
         g2d.drawRect(frameMouseX - 5, frameMouseY - 5, 10, 10);
 
         if (mouse.down) {
+            //mouse.down = false;
             for (int x = 0; x < 10; x++) {
                 for (int y = 0; y < 10; y++) {
                     int realX = frameMouseX + x + player.x;
@@ -200,6 +201,7 @@ public class GamePanel extends JPanel implements Runnable {
                         if (chunk.elements[elementCoordinate(elementX, elementY)] instanceof Air) {
                             chunk.elements[elementCoordinate(elementX, elementY)] = new MovableSolid(realX, realY, new int[]{255, 120, 0, 0}, chunk);
                             chunk.hasUpdatedSinceImageBufferChange = true;
+                            chunk.shouldStepNextFrame = true;
                         }
                         ;
                     }

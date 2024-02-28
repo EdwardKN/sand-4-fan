@@ -2,26 +2,30 @@ package world;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.Map;
 
 import perlin.PerlinGenerator;
 
-import static world.Chunk.CHUNKSIZE;
+import static world.Chunk.*;
 
 
 public class World {
 
-    public Dictionary<String, Chunk> chunks = new Hashtable<>();
+    public Map<String, Chunk> chunks = new Hashtable<>();
 
     static final int seed = 0;
 
     public PerlinGenerator perlin = new PerlinGenerator(seed);
 
-    public void initializeWorld() {
-        for (int x = 0; x < 20; x++) {
-            for (int y = 0; y < 10; y++) {
-                createNewChunk(this, x, y);
-            }
-        }
+    public void updateChunks() {
+        chunks.forEach(
+                (coord, chunk) -> {
+                    if (chunk.shouldStep) {
+                        chunk.updateElements();
+                    }
+                    chunk.shiftShouldStepAndReset();
+                }
+        );
     }
 
     public static void createNewChunk(World world, int x, int y) {
@@ -32,6 +36,18 @@ public class World {
 
     public static int getChunkCoord(int c) {
         return (int) ((c - (c < 0 ? -1 : 0)) / CHUNKSIZE) + (c < 0 ? -1 : 0);
+    }
+
+    public static Element getElementAtCell(World world, int x, int y) {
+        int chunkX = getChunkCoord(x);
+        int chunkY = getChunkCoord(y);
+
+        int elementX = relativeElementCoordinate(x);
+        int elementY = relativeElementCoordinate(y);
+
+        int elementCoordinateValue = elementCoordinate(elementX, elementY);
+
+        return world.chunks.get(chunkX + "," + chunkY).elements[elementCoordinateValue];
     }
 
 }

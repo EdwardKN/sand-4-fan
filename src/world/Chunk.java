@@ -5,6 +5,7 @@ import world.elementTypes.Air;
 import world.elementTypes.Solid;
 
 import java.awt.image.BufferedImage;
+import java.util.*;
 
 public class Chunk {
     public int x, y;
@@ -50,6 +51,26 @@ public class Chunk {
 
     }
 
+    public void updateElements() {
+        hasUpdatedSinceImageBufferChange = true;
+
+        Element[] shuffledElements = Arrays.copyOf(elements, elements.length);
+        shuffleArray(shuffledElements);
+
+
+        for (int i = 0; i < Math.pow(CHUNKSIZE, 2); i++) {
+            if (shuffledElements[i].movable) {
+                shuffledElements[i].step();
+            }
+        }
+
+    }
+
+    public void shiftShouldStepAndReset() {
+        shouldStep = shouldStepNextFrame;
+        shouldStepNextFrame = false;
+    }
+
     public static int elementCoordinate(int x, int y) {
         return y * CHUNKSIZE + x;
     }
@@ -58,5 +79,16 @@ public class Chunk {
         return ((c % CHUNKSIZE) + CHUNKSIZE) % CHUNKSIZE;
     }
 
+    private static void shuffleArray(Element[] array) {
+        int index;
+        Element temp;
+        Random random = new Random();
+        for (int i = array.length - 1; i > 0; i--) {
+            index = random.nextInt(i + 1);
+            temp = array[index];
+            array[index] = array[i];
+            array[i] = temp;
+        }
+    }
 }
 
