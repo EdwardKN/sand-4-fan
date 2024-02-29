@@ -1,14 +1,12 @@
 package world;
 
 import java.util.Collection;
-import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Map;
 
 import perlin.PerlinGenerator;
 
 import static main.Utils.*;
-import static world.Chunk.*;
 
 
 public class World {

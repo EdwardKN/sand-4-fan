@@ -47,13 +47,6 @@ public class GamePanel extends JPanel implements Runnable {
     Player player = new Player(this, keyH);
 
     public GamePanel() {
-        this.setPreferredSize(new Dimension(1280, 720));
-        this.setBackground(Color.WHITE);
-        this.setDoubleBuffered(true);
-
-        this.addKeyListener(keyH);
-        this.addMouseListener(mouse);
-        this.setFocusable(true);
         addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent evt) {
                 Component c = (Component) evt.getSource();
@@ -62,6 +55,14 @@ public class GamePanel extends JPanel implements Runnable {
                 calculateRealSize();
             }
         });
+        this.setPreferredSize(new Dimension(1280, 720));
+        this.setBackground(Color.WHITE);
+        this.setDoubleBuffered(true);
+
+        this.addKeyListener(keyH);
+        this.addMouseListener(mouse);
+        this.setFocusable(true);
+
     }
 
 
@@ -88,7 +89,7 @@ public class GamePanel extends JPanel implements Runnable {
             if (TRUEFPS || delta >= 1) {
                 update();
                 drawToTempScreen();
-                drawToScreen();
+                repaint();
                 delta--;
                 drawCount++;
             }
@@ -138,8 +139,9 @@ public class GamePanel extends JPanel implements Runnable {
 
     }
 
-    public void drawToScreen() {
-        Graphics g = getGraphics();
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
         g.drawImage(tempScreen, (screenWidth - realWidth) / 2, (screenHeight - realHeight) / 2, realWidth, realHeight, null);
         g.dispose();
     }

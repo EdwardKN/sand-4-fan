@@ -8,7 +8,7 @@ import static world.Chunk.CHUNKSIZE;
 
 public class Utils {
     public static int getChunkCoord(int c) {
-        return (int) ((c - (c < 0 ? -1 : 0)) / CHUNKSIZE) + (c < 0 ? -1 : 0);
+        return ((c - (c < 0 ? -1 : 0)) / CHUNKSIZE) + (c < 0 ? -1 : 0);
     }
 
     public static int elementCoordinate(int x, int y) {
