@@ -4,6 +4,7 @@ import world.World;
 import world.Chunk;
 import entity.Player;
 import world.elementTypes.Air;
+import world.elementTypes.Liquid;
 import world.elementTypes.MovableSolid;
 
 import java.awt.*;
@@ -40,6 +41,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     KeyHandler keyH = new KeyHandler();
     MouseHandler mouse = new MouseHandler();
+
     Thread gameThread;
 
     World world;
@@ -62,7 +64,6 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(keyH);
         this.addMouseListener(mouse);
         this.setFocusable(true);
-
     }
 
 
@@ -200,7 +201,7 @@ public class GamePanel extends JPanel implements Runnable {
                     if (chunk != null) {
 
                         if (chunk.elements[elementCoordinate(elementX, elementY)] instanceof Air) {
-                            chunk.elements[elementCoordinate(elementX, elementY)] = new MovableSolid(realX, realY, new int[]{255, 120, 0, 0}, chunk);
+                            chunk.elements[elementCoordinate(elementX, elementY)] = new MovableSolid(realX, realY, new int[]{255, 120, 50, 0}, chunk);
                             chunk.hasUpdatedSinceImageBufferChange = true;
                             chunk.shouldStepNextFrame = true;
                         }

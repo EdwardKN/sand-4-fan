@@ -14,6 +14,10 @@ public class Element {
 
     public boolean movable = false;
 
+    public double velY = 1;
+
+    public double accY = 0.2;
+
     public Element(int x, int y, int[] col, Chunk chunk) {
         this.x = x;
         this.y = y;
