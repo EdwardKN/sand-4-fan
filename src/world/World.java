@@ -4,9 +4,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.stream.Stream;
 
+import entity.Player;
 import perlin.PerlinGenerator;
 
+import static main.GamePanel.*;
 import static main.Utils.*;
 
 
@@ -14,9 +17,17 @@ public class World {
 
     public Map<String, Chunk> chunks = new Hashtable<>();
 
+    public Particle[] particles = new Particle[0];
+
+    Player player;
+
     static final int seed = 0;
 
     public PerlinGenerator perlin = new PerlinGenerator(seed);
+
+    public World(Player player) {
+        this.player = player;
+    }
 
     public void updateChunks() {
         Collection<Chunk> values = chunks.values();
@@ -27,6 +38,14 @@ public class World {
                 chunk.updateElements();
             }
             chunk.shiftShouldStepAndReset();
+        }
+    }
+
+    public void updateParticles() {
+        Particle[] filteredParticles = Stream.of(particles).filter(e -> detectCollision(e.x, e.y, 1, 1, player.x, player.y, STANDARDX * RENDERSCALE, STANDARDY * RENDERSCALE)).toArray(Particle[]::new);
+
+        for (Particle particle : filteredParticles) {
+            particle.updatePos();
         }
     }
 

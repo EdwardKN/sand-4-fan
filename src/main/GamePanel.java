@@ -6,6 +6,7 @@ import entity.Player;
 import world.elementTypes.Air;
 import world.elementTypes.Liquid;
 import world.elementTypes.MovableSolid;
+import world.elementTypes.Solid;
 
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
@@ -22,9 +23,9 @@ import static world.Chunk.*;
 
 public class GamePanel extends JPanel implements Runnable {
 
-    static final int STANDARDX = 16;
-    static final int STANDARDY = 9;
-    static final int RENDERSCALE = 15;
+    public static final int STANDARDX = 16;
+    public static final int STANDARDY = 9;
+    public static final int RENDERSCALE = 15;
 
     final int maxX = STANDARDX * RENDERSCALE / CHUNKSIZE + 2;
     final int maxY = STANDARDY * RENDERSCALE / CHUNKSIZE + 2;
@@ -41,6 +42,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     static final int FPS = 60;
     int currentFPS = 0;
+    double updateTime = 0;
 
     final boolean TRUEFPS = false;
 
@@ -94,6 +96,7 @@ public class GamePanel extends JPanel implements Runnable {
         long currentTime;
         long timer = 0;
         int drawCount = 0;
+        double tmpUpdateTime = 0;
 
         while (gameThread != null) {
             currentTime = System.nanoTime();
@@ -108,9 +111,12 @@ public class GamePanel extends JPanel implements Runnable {
                 repaint();
                 delta--;
                 drawCount++;
+
+                tmpUpdateTime = System.nanoTime() - currentTime;
             }
             if (timer > 1000000000) {
                 currentFPS = drawCount;
+                updateTime = tmpUpdateTime / 1000000;
                 drawCount = 0;
                 timer = 0;
             }
@@ -118,12 +124,13 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update() {
+        world.updateParticles();
         world.updateChunks();
         player.update();
     }
 
     public void initGame() {
-        world = new World();
+        world = new World(player);
 
         tempScreen = new BufferedImage(STANDARDX * RENDERSCALE, STANDARDY * RENDERSCALE, BufferedImage.TYPE_INT_ARGB);
         g2 = (Graphics2D) tempScreen.getGraphics();
@@ -150,7 +157,8 @@ public class GamePanel extends JPanel implements Runnable {
         g2.setFont(new Font("Arial", Font.BOLD, 10));
         g2.setColor(Color.BLACK);
 
-        g2.drawString("FPS: " + currentFPS, 20, 20);
+        g2.drawString(currentFPS + "FPS", 20, 20);
+        g2.drawString(updateTime + "ms", 20, 40);
 
     }
 
@@ -197,7 +205,7 @@ public class GamePanel extends JPanel implements Runnable {
         g2d.drawRect(frameMouseX - 5, frameMouseY - 5, 10, 10);
 
         if (mouse.down) {
-            //mouse.down = false;
+            mouse.down = false;
             for (int x = 0; x < 10; x++) {
                 for (int y = 0; y < 10; y++) {
                     int realX = frameMouseX + x + player.x - 5;
@@ -217,6 +225,8 @@ public class GamePanel extends JPanel implements Runnable {
                             chunk.elements[elementCoordinate(elementX, elementY)] = new MovableSolid(realX, realY, new int[]{255, 120, 50, 0}, chunk);
                             chunk.hasUpdatedSinceImageBufferChange = true;
                             chunk.shouldStepNextFrame = true;
+                        } else {
+                            //chunk.elements[elementCoordinate(elementX, elementY)].convertToParticle(0, -5);
                         }
                     }
                 }
