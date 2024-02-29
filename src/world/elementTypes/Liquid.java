@@ -70,9 +70,17 @@ public class Liquid extends Element {
         }
         if (maxLeft != 0 || maxRight != 0) {
             if (maxLeft > maxRight) {
-                moveTo(x - maxLeft, y);
+                if (maxLeft > dispersionRate / 2) {
+                    convertToParticle(-Math.random(), -Math.random() * 0.5);
+                } else {
+                    moveTo(x - maxLeft, y);
+                }
             } else if (maxRight > maxLeft) {
-                moveTo(x + maxRight, y);
+                if (maxRight > dispersionRate / 2) {
+                    convertToParticle(Math.random(), -Math.random() * 0.5);
+                } else {
+                    moveTo(x + maxRight, y);
+                }
             } else {
                 moveTo(x + maxRight * ((Math.random() * 2) > 0.5 ? -1 : 1), y);
             }

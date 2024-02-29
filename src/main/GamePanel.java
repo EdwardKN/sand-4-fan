@@ -205,7 +205,6 @@ public class GamePanel extends JPanel implements Runnable {
         g2d.drawRect(frameMouseX - 5, frameMouseY - 5, 10, 10);
 
         if (mouse.down) {
-            mouse.down = false;
             for (int x = 0; x < 10; x++) {
                 for (int y = 0; y < 10; y++) {
                     int realX = frameMouseX + x + player.x - 5;
@@ -222,11 +221,9 @@ public class GamePanel extends JPanel implements Runnable {
                     if (chunk != null) {
 
                         if (chunk.elements[elementCoordinate(elementX, elementY)] instanceof Air) {
-                            chunk.elements[elementCoordinate(elementX, elementY)] = new MovableSolid(realX, realY, new int[]{255, 120, 50, 0}, chunk);
+                            chunk.elements[elementCoordinate(elementX, elementY)] = new Liquid(realX, realY, new int[]{255, 50, 50, 250}, chunk);
                             chunk.hasUpdatedSinceImageBufferChange = true;
                             chunk.shouldStepNextFrame = true;
-                        } else {
-                            //chunk.elements[elementCoordinate(elementX, elementY)].convertToParticle(0, -5);
                         }
                     }
                 }

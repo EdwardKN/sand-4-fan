@@ -104,7 +104,7 @@ public class Element {
 
     public void convertToParticle(double velX, double velY) {
         if (chunk != null) {
-            world.particles = push(world.particles, new Particle(x, y, col, velX, velY, accY, world));
+            world.particles.add(new Particle(x, y, col, velX, velY, accY, this, world));
             chunk.elements[elementCoordinate(relativeX, relativeY)] = new Air(x, y, chunk);
         }
     }

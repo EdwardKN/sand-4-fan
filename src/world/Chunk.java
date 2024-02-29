@@ -38,7 +38,7 @@ public class Chunk {
                 imageBuffer.setRGB(x, y, elements[elementCoordinate(x, y)].drawCol);
             }
         }
-        Particle[] filteredParticles = Stream.of(world.particles).filter(e -> detectCollision(e.drawX, e.drawY, 1, 1, x * CHUNKSIZE, y * CHUNKSIZE, CHUNKSIZE, CHUNKSIZE)).toArray(Particle[]::new);
+        Particle[] filteredParticles = world.particles.stream().filter(e -> detectCollision(e.drawX, e.drawY, 1, 1, x * CHUNKSIZE, y * CHUNKSIZE, CHUNKSIZE, CHUNKSIZE)).toArray(Particle[]::new);
 
         for (Particle particle : filteredParticles) {
 

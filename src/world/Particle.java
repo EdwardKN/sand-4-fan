@@ -1,7 +1,12 @@
 package world;
 
-import static main.Utils.convertToCol;
-import static main.Utils.getChunkCoord;
+import world.elementTypes.Air;
+
+import java.util.Arrays;
+import java.util.stream.Stream;
+
+import static main.Utils.*;
+import static world.Chunk.CHUNKSIZE;
 
 public class Particle {
 
@@ -10,9 +15,11 @@ public class Particle {
 
     int drawX, drawY, oldDrawX, oldDrawY, drawCol;
 
+    Element element;
+
     World world;
 
-    public Particle(int x, int y, int[] col, double startVelX, double startVelY, double accY, World world) {
+    public Particle(int x, int y, int[] col, double startVelX, double startVelY, double accY, Element element, World world) {
         this.x = x;
         this.y = y;
         this.drawX = x;
@@ -27,6 +34,8 @@ public class Particle {
         this.drawCol = convertToCol(col);
 
         this.world = world;
+
+        this.element = element;
     }
 
     public void updatePos() {
@@ -48,7 +57,7 @@ public class Particle {
             Chunk chunk = world.chunks.get(chunkX + "," + chunkY);
 
             chunk.hasUpdatedSinceImageBufferChange = true;
-            
+
             if (world.chunks.get((chunkX + 1) + "," + chunkY) == null) {
                 world.createNewChunk(chunkX + 1, chunkY);
             }
@@ -65,6 +74,42 @@ public class Particle {
             world.chunks.get((chunkX - 1) + "," + chunkY).shouldStepNextFrame = true;
             world.chunks.get(chunkX + "," + (chunkY + 1)).shouldStepNextFrame = true;
             world.chunks.get(chunkX + "," + (chunkY - 1)).shouldStepNextFrame = true;
+
+            if (!(world.getElementAtCell(drawX, drawY) instanceof Air)) {
+                x -= this.velX;
+                y -= this.velY;
+                drawX = (int) x;
+                drawY = (int) y;
+
+                while (!(world.getElementAtCell(drawX, drawY) instanceof Air)) {
+                    y--;
+                    drawY = (int) y;
+                }
+
+                convertToElement();
+            }
         }
+    }
+
+    public void convertToElement() {
+        int chunkX = getChunkCoord(drawX);
+        int chunkY = getChunkCoord(drawY);
+
+        int elementX = relativeElementCoordinate(drawX);
+        int elementY = relativeElementCoordinate(drawY);
+
+        element.x = drawX;
+        element.y = drawY;
+
+        element.calculateRelativeXY();
+
+        Chunk chunk = world.chunks.get(chunkX + "," + chunkY);
+
+        chunk.hasUpdatedSinceImageBufferChange = true;
+        chunk.shouldStepNextFrame = true;
+
+        chunk.elements[elementCoordinate(elementX, elementY)] = element;
+
+        world.particles.remove(this);
     }
 }

@@ -1,9 +1,6 @@
 package world;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Hashtable;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 import entity.Player;
@@ -17,8 +14,7 @@ public class World {
 
     public Map<String, Chunk> chunks = new Hashtable<>();
 
-    public Particle[] particles = new Particle[0];
-
+    ArrayList<Particle> particles = new ArrayList<Particle>();
     Player player;
 
     static final int seed = 0;
@@ -42,10 +38,16 @@ public class World {
     }
 
     public void updateParticles() {
-        Particle[] filteredParticles = Stream.of(particles).filter(e -> detectCollision(e.x, e.y, 1, 1, player.x, player.y, STANDARDX * RENDERSCALE, STANDARDY * RENDERSCALE)).toArray(Particle[]::new);
+        Particle[] filteredParticles = particles.stream().filter(e -> detectCollision(e.x, e.y, 1, 1, player.x, player.y, STANDARDX * RENDERSCALE, STANDARDY * RENDERSCALE)).toArray(Particle[]::new);
 
         for (Particle particle : filteredParticles) {
             particle.updatePos();
+        }
+
+        Particle[] otherParticles = particles.stream().filter(e -> !detectCollision(e.x, e.y, 1, 1, player.x, player.y, STANDARDX * RENDERSCALE, STANDARDY * RENDERSCALE)).toArray(Particle[]::new);
+
+        for (Particle particle : otherParticles) {
+            particle.convertToElement();
         }
     }
 
@@ -65,7 +67,14 @@ public class World {
 
         int elementCoordinateValue = elementCoordinate(elementX, elementY);
 
-        return chunks.get(chunkX + "," + chunkY).elements[elementCoordinateValue];
+        Chunk chunk = chunks.get(chunkX + "," + chunkY);
+
+        if (chunk == null) {
+            createNewChunk(chunkX, chunkY);
+            return null;
+        }
+
+        return chunk.elements[elementCoordinateValue];
     }
 
 }
