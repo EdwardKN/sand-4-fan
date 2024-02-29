@@ -26,6 +26,9 @@ public class GamePanel extends JPanel implements Runnable {
     static final int STANDARDY = 9;
     static final int RENDERSCALE = 15;
 
+    final int maxX = STANDARDX * RENDERSCALE / CHUNKSIZE + 2;
+    final int maxY = STANDARDY * RENDERSCALE / CHUNKSIZE + 2;
+
     int screenWidth = 1280;
     int screenHeight = 720;
     int realWidth = 0;
@@ -141,7 +144,6 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void drawToTempScreen() {
-
         drawChunks(g2);
         drawCursor(g2);
 
@@ -160,9 +162,6 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void drawChunks(Graphics2D g2d) {
-        int maxX = STANDARDX * RENDERSCALE / CHUNKSIZE + 2;
-        int maxY = STANDARDY * RENDERSCALE / CHUNKSIZE + 2;
-
         for (int x = -1; x < maxX; x++) {
             for (int y = -1; y < maxY; y++) {
                 int chunkX = x + player.x / CHUNKSIZE;

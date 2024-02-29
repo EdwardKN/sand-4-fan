@@ -6,6 +6,7 @@ import world.elementTypes.Solid;
 
 import java.awt.image.BufferedImage;
 import java.util.*;
+import java.util.stream.Stream;
 
 import static main.Utils.elementCoordinate;
 import static main.Utils.shuffleArray;
@@ -57,13 +58,14 @@ public class Chunk {
     public void updateElements() {
         hasUpdatedSinceImageBufferChange = true;
 
-        Element[] shuffledElements = Arrays.copyOf(elements, elements.length);
-        shuffleArray(shuffledElements);
+        Element[] elementsCopy = Arrays.copyOf(elements, elements.length);
 
+        Element[] filteredElements = Stream.of(elementsCopy).filter(e -> e.movable).toArray(Element[]::new);
+        shuffleArray(filteredElements);
 
-        for (int i = 0; i < Math.pow(CHUNKSIZE, 2); i++) {
-            if (shuffledElements[i].movable) {
-                shuffledElements[i].step();
+        for (Element element : filteredElements) {
+            if (element.movable) {
+                element.step();
             }
         }
 

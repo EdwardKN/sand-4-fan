@@ -19,9 +19,9 @@ public class Utils {
         return ((c % CHUNKSIZE) + CHUNKSIZE) % CHUNKSIZE;
     }
 
-    public static void shuffleArray(Element[] array) {
+    public static <T> void shuffleArray(T[] array) {
         int index;
-        Element temp;
+        T temp;
         Random random = new Random();
         for (int i = array.length - 1; i > 0; i--) {
             index = random.nextInt(i + 1);
