@@ -10,6 +10,8 @@ import world.elementTypes.MovableSolid;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import javax.swing.*;
 
@@ -41,6 +43,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     KeyHandler keyH = new KeyHandler();
     MouseHandler mouse = new MouseHandler();
+    MouseMoveHandler mousePos = new MouseMoveHandler();
 
     Thread gameThread;
 
@@ -57,12 +60,21 @@ public class GamePanel extends JPanel implements Runnable {
                 calculateRealSize();
             }
         });
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                mouse.x = e.getX();
+                mouse.y = e.getY();
+                System.out.println("he");
+            }
+        });
         this.setPreferredSize(new Dimension(1280, 720));
         this.setBackground(Color.WHITE);
         this.setDoubleBuffered(true);
 
         this.addKeyListener(keyH);
         this.addMouseListener(mouse);
+        this.addMouseMotionListener(mousePos);
         this.setFocusable(true);
     }
 
@@ -170,16 +182,18 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void drawCursor(Graphics2D g2d) {
-        Point mousePos = MouseInfo.getPointerInfo().getLocation();
+        Point realMousePos = new Point();
+        realMousePos.x = mousePos.x;
+        realMousePos.y = mousePos.y;
 
-        mousePos.x -= (screenWidth - realWidth) / 2;
-        mousePos.y -= (screenHeight - realHeight) / 2;
+        realMousePos.x -= (screenWidth - realWidth) / 2;
+        realMousePos.y -= (screenHeight - realHeight) / 2;
 
-        mousePos.x = (int) clamp(mousePos.x, 0, (float) realWidth);
-        mousePos.y = (int) clamp(mousePos.y, 0, (float) realHeight);
+        realMousePos.x = (int) clamp(realMousePos.x, 0, (float) realWidth);
+        realMousePos.y = (int) clamp(realMousePos.y, 0, (float) realHeight);
 
-        int frameMouseX = (int) (mousePos.x / scale);
-        int frameMouseY = (int) (mousePos.y / scale);
+        int frameMouseX = (int) (realMousePos.x / scale);
+        int frameMouseY = (int) (realMousePos.y / scale);
 
         g2d.drawRect(frameMouseX - 5, frameMouseY - 5, 10, 10);
 
@@ -187,8 +201,8 @@ public class GamePanel extends JPanel implements Runnable {
             //mouse.down = false;
             for (int x = 0; x < 10; x++) {
                 for (int y = 0; y < 10; y++) {
-                    int realX = frameMouseX + x + player.x;
-                    int realY = frameMouseY + y + player.y;
+                    int realX = frameMouseX + x + player.x - 5;
+                    int realY = frameMouseY + y + player.y - 5;
 
                     int chunkX = getChunkCoord(realX);
                     int chunkY = getChunkCoord(realY);

@@ -7,6 +7,9 @@ public class MouseHandler implements MouseListener {
 
     public boolean down = false;
 
+    public int x = 0;
+    public int y = 0;
+
     @Override
     public void mouseClicked(MouseEvent e) {
 
